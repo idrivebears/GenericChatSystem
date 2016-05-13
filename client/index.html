@@ -1,0 +1,39 @@
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+    var socket = io();
+    
+    
+    // CALLERS
+    var sendMessage = function() {
+        var chatBox = document.getElementById('chatBox');
+        socket.emit('incomingMessage', {
+            text: chatBox.value
+        });
+
+        chatBox.value = "";
+    }
+    
+    var setNick = function() {
+        var nickBox = document.getElementById('nickBox');
+        socket.emit('setNick', {
+            nickname: nickBox.value
+        })
+    }
+
+    // LISTENERS
+    socket.on('newMessage', function(message) {
+        var chatDisplay = document.getElementById('chatDisplay');
+        chatDisplay.innerHTML += "<div>"+ "<span style=\"" + message.style + "\">" + message.client + ": </span>"+ message.text + "</div>";
+    });
+
+    socket.on('serverMessage', function(data) {
+        console.log(data.msg);
+    });
+
+</script>
+<input type="text" id = "nickBox" placeholder="Enter your nick..." style="color:gray"></input><button onclick="setNick()">Set</button>
+<div id = "chatDisplay" height="200px">
+<div>Welcome to Chatto</div>
+</div>
+<input type="text" id="chatBox"></input>
+<button onclick="sendMessage()" type="submit">Send</button>
